@@ -4,6 +4,7 @@ export interface DefaultEmailAdapterParams {
     currentUserFullName: string;
     defaultToEmails?: string[];
     referenceName?: string | null;
+    referenceDoctype?: string;
     activeLeadName?: string | null;
     activeLeadDoctype?: string;
     links?: EmailComposerLink[];
@@ -18,7 +19,7 @@ export interface DefaultEmailAdapterParams {
  * A standalone hook to create the default Frappe-compatible adapter and config.
  * This can be used by the package when the user doesn't provide their own.
  */
-export declare function useDefaultEmailAdapter({ baseURL, currentUserFullName, defaultToEmails, referenceName, activeLeadName, activeLeadDoctype, links, replyData, onEmailSent, showNotification, showWarning, showError, token, }: DefaultEmailAdapterParams): {
+export declare function useDefaultEmailAdapter({ baseURL, currentUserFullName, defaultToEmails, referenceName, referenceDoctype, activeLeadName, activeLeadDoctype, links, replyData, onEmailSent, showNotification, showWarning, showError, token, }: DefaultEmailAdapterParams): {
     config: EmailWidgetConfig;
     apiAdapter: EmailWidgetApiAdapter;
 };

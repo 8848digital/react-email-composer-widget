@@ -45,6 +45,7 @@ export const useEmailComposerLogic = ({ apiAdapter, config, onClose, onSend }: U
   // Attachments
   const {
     attachments,
+    setAttachments,
     fileUploadRef,
     handleFileSelect,
     removeAttachment,
@@ -90,10 +91,19 @@ export const useEmailComposerLogic = ({ apiAdapter, config, onClose, onSend }: U
           setShowBCC(true);
         }
       }
+
+      if (replyData.attachments?.length) {
+        setAttachments(replyData.attachments.map((a) => ({
+          id: a.name || a.file_name || Math.random().toString(36).substr(2, 9),
+          name: a.name,
+          fileUrl: a.file_url,
+          isUploading: false,
+        })));
+      }
     };
 
     queueMicrotask(seedReplyFields);
-  }, [replyData, setSubject, setToRecipients, setCcRecipients, setShowCC, setBccRecipients, setShowBCC]);
+  }, [replyData, setSubject, setToRecipients, setCcRecipients, setShowCC, setBccRecipients, setShowBCC, setAttachments]);
 
   // When defaultToEmails arrives after mount, seed To if still empty
   useEffect(() => {
@@ -185,7 +195,7 @@ export const useEmailComposerLogic = ({ apiAdapter, config, onClose, onSend }: U
     const bcc = bccRecipients.length > 0 ? bccRecipients.map((r) => r.email).join(", ") : undefined;
 
     // Get file names from successfully uploaded attachments
-    const attachmentFileNames = attachments.filter((a) => a.fileName).map((a) => a.fileName as string);
+    const attachmentFileNames = attachments.filter((a) => a.name).map((a) => a.name as string);
 
     // Wrap content in div with ql-editor class (matching Frappe's expected format)
     let htmlContent = emailBody ? `<div class="ql-editor read-mode">${emailBody}</div>` : "";
@@ -216,7 +226,7 @@ export const useEmailComposerLogic = ({ apiAdapter, config, onClose, onSend }: U
       content: htmlContent,
       cc,
       bcc,
-      doctype: config.activeLeadName ? config.activeLeadDoctype : "Contact",
+      doctype: config.activeLeadName ? config.activeLeadDoctype : (config.doctype || "Contact"),
       name: config.activeLeadName ? config.activeLeadName : config.referenceName,
       attachments: attachmentFileNames.length > 0 ? attachmentFileNames : undefined,
 

@@ -18,6 +18,7 @@ interface EmailComposerTriggerProps {
   currentUserFullName?: string;
   defaultToEmails?: string[];
   referenceName?: string | null;
+  referenceDoctype?: string;
   activeLeadName?: string | null;
   activeLeadDoctype?: string;
   links?: EmailComposerLink[];
@@ -52,6 +53,7 @@ export const EmailComposerTrigger: React.FC<EmailComposerTriggerProps> = ({
   currentUserFullName = "",
   defaultToEmails = [],
   referenceName = null,
+  referenceDoctype,
   activeLeadName = null,
   activeLeadDoctype = "CRM Lead",
   links = [],
@@ -77,6 +79,7 @@ export const EmailComposerTrigger: React.FC<EmailComposerTriggerProps> = ({
     currentUserFullName,
     defaultToEmails,
     referenceName,
+    referenceDoctype,
     activeLeadName,
     activeLeadDoctype,
     links,

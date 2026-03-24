@@ -275,10 +275,10 @@ const EmailComposer = ({
             {attachments.map((attachment) => (
               <div key={attachment.id} className="ecw-email-composer-attachment-tag">
                 <span>
-                  {attachment.file.name}
+                  {attachment.fileName || attachment.name || attachment.file?.name}
                   {attachment.isUploading && " (Uploading...)"}
                   {attachment.uploadError && ` (Error: ${attachment.uploadError})`}
-                  {attachment.fileName && !attachment.isUploading && !attachment.uploadError && " ✓"}
+                  {(attachment.fileName || attachment.name) && !attachment.isUploading && !attachment.uploadError && " ✓"}
                 </span>
                 <button type="button" className="ecw-email-composer-tag-remove" onClick={() => removeAttachment(attachment.id)}>
                   <XIcon size={14} />

@@ -15,15 +15,18 @@ export const useEmailAttachments = (apiAdapter: EmailWidgetApiAdapter) => {
     // Add attachments to state first (with uploading status)
     setAttachments((prev) => [...prev, ...newAttachments]);
 
-    // Upload each file via the adapter
+    // Upload each real file via the adapter
     newAttachments.forEach((attachment) => {
+      if (!attachment.file) return;
+
       apiAdapter
         .uploadFile(attachment.file)
         .then((data) => {
-          const fileName = data?.name;
-          if (fileName) {
+          const name = data?.name;
+          const fileName = data?.file_name || attachment.file?.name || "Attachment";
+          if (name) {
             setAttachments((prev) =>
-              prev.map((att) => (att.id === attachment.id ? { ...att, fileName, isUploading: false } : att))
+              prev.map((att) => (att.id === attachment.id ? { ...att, name, fileName, isUploading: false } : att))
             );
           } else {
             setAttachments((prev) =>

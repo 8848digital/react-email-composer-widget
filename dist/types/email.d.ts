@@ -12,6 +12,12 @@ export interface EmailReplyData {
     senderName?: string;
     date?: string;
     time?: string;
+    attachments?: {
+        name?: string;
+        file_name?: string;
+        file_url: string;
+        file_size?: number;
+    }[];
 }
 export interface EmailTemplate {
     id: string;
@@ -20,8 +26,10 @@ export interface EmailTemplate {
 }
 export interface Attachment {
     id: string;
-    file: File;
+    file?: File;
+    name?: string;
     fileName?: string;
+    fileUrl?: string;
     isUploading?: boolean;
     uploadError?: string;
 }
@@ -49,6 +57,7 @@ export interface EmailWidgetApiAdapter {
     /** Upload a file. Returns the file name from the upload response. */
     uploadFile: (file: File) => Promise<{
         name?: string;
+        file_name?: string;
         file_url?: string;
     }>;
     /** Fetch email templates. */

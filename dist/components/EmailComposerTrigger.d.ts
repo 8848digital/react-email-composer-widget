@@ -7,6 +7,7 @@ interface EmailComposerTriggerProps {
     currentUserFullName?: string;
     defaultToEmails?: string[];
     referenceName?: string | null;
+    referenceDoctype?: string;
     activeLeadName?: string | null;
     activeLeadDoctype?: string;
     links?: EmailComposerLink[];

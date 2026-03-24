@@ -14,6 +14,7 @@ export interface DefaultEmailAdapterParams {
   currentUserFullName: string;
   defaultToEmails?: string[];
   referenceName?: string | null;
+  referenceDoctype?: string;
   activeLeadName?: string | null;
   activeLeadDoctype?: string;
   links?: EmailComposerLink[];
@@ -35,6 +36,7 @@ export function useDefaultEmailAdapter({
   currentUserFullName,
   defaultToEmails,
   referenceName,
+  referenceDoctype,
   activeLeadName,
   activeLeadDoctype = "CRM Lead",
   links,
@@ -56,13 +58,13 @@ export function useDefaultEmailAdapter({
       currentUserFullName,
       defaultToEmails,
       referenceName,
-      doctype: activeLeadName ? activeLeadDoctype : "Contact",
-      contextName: activeLeadName,
-      contextDoctype: activeLeadDoctype,
+      doctype: activeLeadName ? activeLeadDoctype : (referenceDoctype || "Contact"),
+      activeLeadName,
+      activeLeadDoctype,
       links,
       replyData: replyData ?? null,
     }),
-    [currentUserFullName, defaultToEmails, referenceName, activeLeadName, activeLeadDoctype, links, replyData]
+    [currentUserFullName, defaultToEmails, referenceName, referenceDoctype, activeLeadName, activeLeadDoctype, links, replyData]
   );
 
   // Unified API Adapter
@@ -107,7 +109,11 @@ export function useDefaultEmailAdapter({
         const res = await methods.uploadFile(file);
         const responseData = res.data as any;
         const responseMessage = responseData?.data?.message || responseData?.message || responseData;
-        return { name: responseMessage?.name, file_url: responseMessage?.file_url };
+        return { 
+          name: responseMessage?.name, 
+          file_name: responseMessage?.file_name,
+          file_url: responseMessage?.file_url 
+        };
       },
 
       getTemplates: async (): Promise<EmailTemplate[]> => {
