@@ -18,15 +18,15 @@ const InternalQuillEditor: React.FC<RichTextEditorProps> = ({
   const quillRef = useRef<Quill | null>(null);
   const isUpdatingRef = useRef(false);
 
+  // Initialize Quill only once
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || quillRef.current) return;
 
-    // Clear the container to prevent double toolbars from re-renders/Strict Mode
+    // Clear the container to prevent double toolbars from React StrictMode
     containerRef.current.innerHTML = "";
     const editorDiv = document.createElement("div");
     containerRef.current.appendChild(editorDiv);
 
-    // Initialize Quill on the new div
     const quill = new Quill(editorDiv, {
       theme: "snow",
       placeholder,
@@ -43,28 +43,41 @@ const InternalQuillEditor: React.FC<RichTextEditorProps> = ({
 
     quillRef.current = quill;
 
-    // Handle text change
+    // Set initial value
+    if (value) {
+      quill.clipboard.dangerouslyPasteHTML(0, value);
+    }
+
     quill.on("text-change", () => {
       if (isUpdatingRef.current) return;
       const html = quill.root.innerHTML;
       onChange(html === "<p><br></p>" ? "" : html);
     });
 
-    // Cleanup
     return () => {
+      // Clear the HTML so if React mounts it again (StrictMode), it starts fresh
+      if (containerRef.current) {
+        containerRef.current.innerHTML = "";
+      }
       quillRef.current = null;
     };
-  }, [placeholder, onChange]);
+  }, [placeholder, onChange]); // Basic config dependencies
 
   // Sync external value to Quill
   useEffect(() => {
-    if (!quillRef.current || isUpdatingRef.current) return;
+    if (!quillRef.current) return;
 
     const currentHtml = quillRef.current.root.innerHTML;
-    if (value !== currentHtml && value !== (currentHtml === "<p><br></p>" ? "" : currentHtml)) {
+    const normalizedCurrent = currentHtml === "<p><br></p>" ? "" : currentHtml;
+    const normalizedTarget = value || "";
+
+    if (normalizedTarget !== normalizedCurrent) {
       isUpdatingRef.current = true;
-      quillRef.current.root.innerHTML = value || "";
-      isUpdatingRef.current = false;
+      quillRef.current.setContents([]); // Clear completely
+      quillRef.current.clipboard.dangerouslyPasteHTML(0, normalizedTarget);
+      setTimeout(() => {
+        isUpdatingRef.current = false;
+      }, 0);
     }
   }, [value]);
 
