@@ -1,0 +1,708 @@
+/* ─── Email Composer Widget ── Scoped with "ecw-" prefix ────────────────── */
+
+@keyframes email-skeleton-pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.ecw-email-composer,
+.ecw-modal-body,
+.ecw-template-modal,
+.ecw-email-composer-editor-wrapper {
+  scrollbar-width: thin;
+  scrollbar-color: #c9ced0 transparent;
+}
+
+.ecw-email-composer::-webkit-scrollbar,
+.ecw-modal-body::-webkit-scrollbar,
+.ecw-template-modal::-webkit-scrollbar,
+.ecw-email-composer-editor-wrapper::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.ecw-email-composer::-webkit-scrollbar-track,
+.ecw-modal-body::-webkit-scrollbar-track,
+.ecw-template-modal::-webkit-scrollbar-track,
+.ecw-email-composer-editor-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.ecw-email-composer::-webkit-scrollbar-thumb,
+.ecw-modal-body::-webkit-scrollbar-thumb,
+.ecw-template-modal::-webkit-scrollbar-thumb,
+.ecw-email-composer-editor-wrapper::-webkit-scrollbar-thumb {
+  background: #c9ced0;
+  border-radius: 4px;
+}
+
+.ecw-email-composer::-webkit-scrollbar-thumb:hover,
+.ecw-modal-body::-webkit-scrollbar-thumb:hover,
+.ecw-template-modal::-webkit-scrollbar-thumb:hover,
+.ecw-email-composer-editor-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #a3a3a3;
+}
+
+.ecw-email-composer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 16px 10px 16px;
+  background-color: #fff;
+  font-family: 'Manrope', sans-serif;
+  border-radius: 8px;
+}
+
+
+.ecw-email-composer-header,
+.ecw-email-composer-from {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 12px;
+}
+
+.ecw-email-composer-label,
+.ecw-email-composer-sender-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #175353;
+}
+
+.ecw-email-composer-label {
+  white-space: nowrap;
+}
+
+.ecw-email-composer-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 34px;
+  border: 1px solid #dfe9ed;
+  padding: 4px;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ecw-email-composer-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.ecw-email-composer-subject-input {
+  flex: 1;
+  min-width: 200px;
+  padding: 6px 8px;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  background-color: #f9f9f9;
+  outline: none;
+  font-family: inherit;
+}
+
+.ecw-email-composer-subject-input:focus {
+  background-color: #f9f9f9;
+}
+
+.ecw-email-composer-recipients-container {
+  display: flex;
+  flex: 1;
+  min-width: 200px;
+  gap: 8px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.ecw-email-composer-recipients {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex: 1;
+  min-width: 200px;
+  align-items: center;
+}
+
+.ecw-email-composer-recipient-input {
+  min-width: 150px;
+  flex: 1;
+  padding: 6px 8px;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  background-color: transparent;
+  outline: none;
+  font-family: inherit;
+}
+
+.ecw-email-composer-recipient-input::placeholder {
+  color: #999;
+  opacity: 0.6;
+}
+
+.ecw-email-composer-recipient-input:focus {
+  background-color: #f9f9f9;
+}
+
+.ecw-email-composer-tag,
+.ecw-email-composer-attachment-tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background-color: #f5f5f5;
+  border-radius: 16px;
+  font-size: 13px;
+  border: 1px solid #e5e7eb;
+}
+
+.ecw-email-composer-tag-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #999;
+  padding: 0;
+  transition: color 0.2s;
+  flex-shrink: 0;
+}
+
+.ecw-email-composer-tag-remove:hover {
+  color: #175353;
+}
+
+.ecw-email-composer-tag-remove svg {
+  width: 100%;
+  height: 100%;
+}
+
+.ecw-email-composer-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.ecw-email-composer-cc-bcc-btn {
+  padding: 6px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  background-color: #f5f5f5;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #2b2b2b;
+  transition: background-color 0.2s, border-color 0.2s;
+  font-family: inherit;
+}
+
+.ecw-email-composer-cc-bcc-btn:hover {
+  background-color: #f5f5f5;
+  border-color: #175353;
+}
+
+.ecw-email-composer-body {
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.ecw-email-composer-editor-wrapper {
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  max-height: 300px;
+  overflow-y: auto;
+  background-color: #fff;
+  position: relative;
+}
+
+.ecw-email-composer-editor-wrapper .p-editor-container {
+  border: none !important;
+}
+
+.ecw-email-composer-editor-wrapper .p-editor-toolbar,
+.ecw-email-composer-editor-wrapper .ql-toolbar {
+  position: sticky !important;
+  top: 0;
+  z-index: 10;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  background-color: #fff;
+}
+
+.ecw-email-composer-editor-wrapper .p-editor-content,
+.ecw-email-composer-editor-wrapper .ql-container {
+  border: none !important;
+  overflow: visible !important;
+  height: auto !important;
+}
+
+.ecw-email-composer-editor-wrapper .ql-editor {
+  overflow-y: visible !important;
+  min-height: 150px;
+}
+
+.ecw-email-composer-rich-text-editor {
+  width: 100%;
+  min-height: 200px;
+}
+
+.ecw-email-composer-rich-text-editor .p-editor-container {
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.ecw-email-composer-rich-text-editor .p-editor-toolbar {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  border-bottom: 1px solid #e5e7eb;
+  background-color: #f8f9fa;
+}
+
+.ecw-email-composer-rich-text-editor .p-editor-content {
+  min-height: 200px;
+  font-size: 14px;
+}
+
+.ecw-email-composer-rich-text-editor .p-editor-content .ql-editor {
+  min-height: 200px;
+  padding: 12px;
+  font-size: 14px;
+}
+
+.ecw-email-composer-rich-text-editor .p-editor-content .ql-editor.ql-blank::before {
+  color: #999;
+  opacity: 0.6;
+  font-style: normal;
+}
+
+.ecw-email-composer-rich-text-editor .p-editor-content .ql-editor table,
+.ecw-email-composer-rich-text-editor .p-editor-content .ql-editor table td,
+.ecw-email-composer-rich-text-editor .p-editor-content .ql-editor table th {
+  border: none !important;
+}
+
+.ecw-email-composer-textarea {
+  width: 100%;
+  min-height: 200px;
+  padding: 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #fff;
+  resize: vertical;
+  line-height: 1.5;
+  outline: none;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.ecw-email-composer-attachments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.ecw-trail-email-preview {
+  padding: 0 12px 12px;
+}
+
+.ecw-trail-divider {
+  margin: 8px 0 16px;
+  border: none;
+  border-top: 1px solid #d1d5db;
+}
+
+.ecw-trail-meta {
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.ecw-email-composer-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 12px;
+}
+
+.ecw-email-composer-footer-left {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.ecw-email-composer-footer-right {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.ecw-email-composer-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #999;
+  border-radius: 4px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.ecw-email-composer-icon-btn:hover {
+  background-color: #f5f5f5;
+  color: #175353;
+}
+
+.ecw-email-composer-btn {
+  padding: 6px 32px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border: none;
+  font-family: inherit;
+}
+
+.ecw-email-composer-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ecw-email-composer-btn-secondary {
+  background-color: #f5f5f5;
+  color: #175353;
+  border: 1px solid #e5e7eb;
+}
+
+.ecw-email-composer-btn-secondary:hover:not(:disabled) {
+  background-color: #e8e8e8;
+}
+
+.ecw-email-composer-btn-primary {
+  background-color: #175353;
+  color: #fff;
+}
+
+.ecw-email-composer-btn-primary:hover:not(:disabled) {
+  background-color: #1a5f5f;
+}
+
+/* ─── Template Modal ──────────────────────────────────────────────────────── */
+
+.ecw-template-section {
+  padding: 16px;
+}
+
+.ecw-template-empty {
+  text-align: center;
+}
+
+.ecw-template-empty p {
+  color: #666;
+  font-size: 14px;
+}
+
+.ecw-template-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  width: 100%;
+}
+
+.ecw-template-card {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 16px;
+  text-align: left;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+  outline: none;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  box-sizing: border-box;
+  overflow: hidden;
+  /* Ensure the button itself never scrolls */
+}
+
+.ecw-template-card:hover {
+  background-color: #f2f5f6;
+  border-color: #175353;
+  box-shadow: 0 2px 8px rgba(23, 83, 83, 0.05);
+}
+
+.ecw-template-card-title {
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #175353;
+  margin: 0 0 11px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.ecw-template-card-divider {
+  border-top: 1px solid #e5e7eb;
+  width: 100%;
+  margin: 0 0 16px 0;
+}
+
+.ecw-template-card-body {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #414141;
+  overflow-y: auto !important;
+  /* The ONLY allowed scrollable area in the card */
+  overflow-x: hidden !important;
+  max-height: 120px;
+  min-height: 120px;
+  position: relative;
+  flex-grow: 1;
+  scrollbar-width: thin;
+  scrollbar-color: #c9ced0 transparent;
+}
+
+
+/* Custom scrollbar matching the application's style for template cards */
+.ecw-template-card-body::-webkit-scrollbar {
+  width: 4px;
+}
+
+.ecw-template-card-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.ecw-template-card-body::-webkit-scrollbar-thumb {
+  background: #c9ced0;
+  border-radius: 4px;
+}
+
+.ecw-email-composer::-webkit-scrollbar-button,
+.ecw-modal-body::-webkit-scrollbar-button,
+.ecw-template-modal::-webkit-scrollbar-button,
+.ecw-template-card-body::-webkit-scrollbar-button,
+.ecw-email-composer-editor-wrapper::-webkit-scrollbar-button {
+  display: none !important;
+}
+
+
+/* Force children to reset styles and HIDE their own scrollbars (parent handles it) */
+.ecw-template-card-body * {
+  font-size: inherit !important;
+  line-height: inherit !important;
+  margin: 0 0 8px 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  /* Force children to NOT have their own scrollbars */
+  scrollbar-width: none !important;
+  /* Hide Firefox scrollbars on children */
+}
+
+.ecw-template-card-body *::-webkit-scrollbar {
+  display: none !important;
+  /* Hide Chrome/Safari scrollbars on children */
+}
+
+
+/* Subtle fade out at bottom of card body to indicate more content */
+.ecw-template-card-body::after {
+  content: "";
+  position: sticky;
+  /* Keep it at the bottom of the visible area */
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.4));
+  pointer-events: none;
+}
+
+
+
+
+
+/* ─── Responsive ──────────────────────────────────────────────────────────── */
+
+/* ─── Trigger Button (Matching contact-button) ─────────────────────────────── */
+
+.ecw-trigger-button {
+  flex: 1;
+  width: 100%;
+  /* Take full width of container/flex-item */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 0 !important;
+  background-color: #f2f5f6;
+  border: 1px solid #dfe9ed;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-weight: 500;
+  font-size: 14px;
+  color: #175353;
+  box-shadow: none;
+  user-select: none;
+  min-height: 82px;
+  /* Match the height of the existing contact buttons */
+  box-sizing: border-box;
+}
+
+
+.ecw-trigger-button:hover:not(:disabled) {
+  background-color: #e8ecef;
+}
+
+.ecw-trigger-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ecw-trigger-icon-wrapper {
+  width: 36px;
+  height: 36px;
+  border-radius: 30px;
+  border: 1px solid #dfe9ed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+}
+
+.ecw-trigger-label {
+  margin-top: 4px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+@media (max-width: 1024px) {
+  .ecw-trigger-button {
+    font-size: 10px;
+    padding: 8px 0;
+  }
+
+  .ecw-trigger-icon-wrapper {
+    width: 30px;
+    height: 30px;
+  }
+
+  .ecw-trigger-icon-wrapper svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+
+/* ─── Modal ─────────────────────────────────────────────────────────────────── */
+
+.ecw-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 16px;
+}
+
+.ecw-modal-container {
+  background: white;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: 90vh;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+.ecw-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.ecw-modal-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.ecw-modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  padding: 4px;
+}
+
+.ecw-modal-body {
+  flex: 1;
+  overflow-y: auto;
+}
+
+@media screen and (max-width: 768px) {
+  .ecw-email-composer-field {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ecw-email-composer-actions {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .ecw-email-composer-footer {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .ecw-email-composer-btn {
+    width: 100%;
+  }
+
+  .ecw-template-grid {
+    grid-template-columns: 1fr;
+  }
+}

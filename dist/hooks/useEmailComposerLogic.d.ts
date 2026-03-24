@@ -1,0 +1,43 @@
+import { EmailWidgetApiAdapter, EmailWidgetConfig, EmailTemplate, RecipientTag, EmailReplyData } from '../types/email';
+interface UseEmailComposerLogicProps {
+    apiAdapter: EmailWidgetApiAdapter;
+    config: EmailWidgetConfig;
+    onClose: () => void;
+    onSend?: () => void;
+}
+export declare const useEmailComposerLogic: ({ apiAdapter, config, onClose, onSend }: UseEmailComposerLogicProps) => {
+    subject: string;
+    setSubject: import('react').Dispatch<import('react').SetStateAction<string>>;
+    toRecipients: RecipientTag[];
+    ccRecipients: RecipientTag[];
+    bccRecipients: RecipientTag[];
+    showCC: boolean;
+    setShowCC: import('react').Dispatch<import('react').SetStateAction<boolean>>;
+    showBCC: boolean;
+    setShowBCC: import('react').Dispatch<import('react').SetStateAction<boolean>>;
+    emailBody: string;
+    setEmailBody: import('react').Dispatch<import('react').SetStateAction<string>>;
+    toInput: string;
+    setToInput: import('react').Dispatch<import('react').SetStateAction<string>>;
+    ccInput: string;
+    setCcInput: import('react').Dispatch<import('react').SetStateAction<string>>;
+    bccInput: string;
+    setBccInput: import('react').Dispatch<import('react').SetStateAction<string>>;
+    attachments: import('../types/email').Attachment[];
+    isTemplateModalOpen: boolean;
+    setIsTemplateModalOpen: import('react').Dispatch<import('react').SetStateAction<boolean>>;
+    fileUploadRef: import('react').RefObject<import('../types/email').FileUploadRef | null>;
+    isPending: boolean;
+    emailTemplates: EmailTemplate[];
+    isLoadingTemplates: boolean;
+    replyData: EmailReplyData | null | undefined;
+    handleRecipientInputKeyDown: (e: React.KeyboardEvent<HTMLInputElement>, type: "to" | "cc" | "bcc") => void;
+    handleRecipientInputBlur: (type: "to" | "cc" | "bcc") => void;
+    removeRecipient: (id: string, type: "to" | "cc" | "bcc") => void;
+    handleFileSelect: (files: File[]) => void;
+    removeAttachment: (id: string) => void;
+    handleAttachClick: () => void;
+    handleSend: () => Promise<void>;
+    handleTemplateSelect: (templateBody: string) => void;
+};
+export {};
