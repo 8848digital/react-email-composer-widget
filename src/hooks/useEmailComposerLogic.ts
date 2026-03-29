@@ -14,10 +14,9 @@ interface UseEmailComposerLogicProps {
   apiAdapter: EmailWidgetApiAdapter;
   config: EmailWidgetConfig;
   onClose: () => void;
-  onSend?: () => void;
 }
 
-export const useEmailComposerLogic = ({ apiAdapter, config, onClose, onSend }: UseEmailComposerLogicProps) => {
+export const useEmailComposerLogic = ({ apiAdapter, config, onClose }: UseEmailComposerLogicProps) => {
   const [subject, setSubject] = useState("");
   const [emailBody, setEmailBody] = useState("");
   const [isPending, setIsPending] = useState(false);
@@ -247,10 +246,6 @@ export const useEmailComposerLogic = ({ apiAdapter, config, onClose, onSend }: U
         // Notify app
         apiAdapter.showNotification?.("Success", "Email sent successfully");
         apiAdapter.onEmailSent?.();
-
-        if (onSend) {
-          onSend();
-        }
         onClose();
       }
     } catch {

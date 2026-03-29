@@ -13,7 +13,6 @@ interface EmailComposerProps {
     replyData?: EmailReplyData | null;
     token?: string;
     onClose: () => void;
-    onSend?: () => void;
     onEmailSent?: () => void;
     /** App provides its own RichTextEditor component (e.g. PrimeReact Editor). */
     RichTextEditor?: React.ComponentType<RichTextEditorProps>;
@@ -21,5 +20,5 @@ interface EmailComposerProps {
     showWarning?: (title: string, message: string) => void;
     showError?: (title: string, message: string) => void;
 }
-declare const EmailComposer: ({ apiAdapter: externalApiAdapter, config: externalConfig, baseURL, currentUserFullName, defaultToEmails, referenceName, activeLeadName, activeLeadDoctype, links, replyData: propsReplyData, token, onClose, onSend, onEmailSent, RichTextEditor, showNotification, showWarning, showError, }: EmailComposerProps) => import("react/jsx-runtime").JSX.Element;
+declare const EmailComposer: ({ apiAdapter: externalApiAdapter, config: externalConfig, baseURL, currentUserFullName, defaultToEmails, referenceName, activeLeadName, activeLeadDoctype, links, replyData: propsReplyData, token, onClose, onEmailSent, RichTextEditor, showNotification, showWarning, showError, }: EmailComposerProps) => import("react/jsx-runtime").JSX.Element;
 export default EmailComposer;

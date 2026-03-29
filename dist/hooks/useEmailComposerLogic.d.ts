@@ -3,9 +3,8 @@ interface UseEmailComposerLogicProps {
     apiAdapter: EmailWidgetApiAdapter;
     config: EmailWidgetConfig;
     onClose: () => void;
-    onSend?: () => void;
 }
-export declare const useEmailComposerLogic: ({ apiAdapter, config, onClose, onSend }: UseEmailComposerLogicProps) => {
+export declare const useEmailComposerLogic: ({ apiAdapter, config, onClose }: UseEmailComposerLogicProps) => {
     subject: string;
     setSubject: import('react').Dispatch<import('react').SetStateAction<string>>;
     toRecipients: RecipientTag[];

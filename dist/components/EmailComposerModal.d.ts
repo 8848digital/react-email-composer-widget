@@ -14,7 +14,6 @@ interface EmailComposerModalProps {
     token?: string;
     isOpen: boolean;
     onClose: () => void;
-    onSend?: () => void;
     RichTextEditor?: React.ComponentType<RichTextEditorProps>;
     modalSize?: string;
     header?: React.ReactNode;

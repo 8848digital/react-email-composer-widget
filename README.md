@@ -1,7 +1,5 @@
 # React Email Composer Widget
 
-A professional, decoupled React Email Composer widget designed with an adapter-based architecture. Built by **8848 Digital**, this package provides a seamless way to integrate email functionality into any React application using your own API and data storage logic.
-
 ## 🚀 Key Features
 
 - **Decoupled Architecture**: Logic is separated from UI using an adapter pattern.
@@ -47,10 +45,9 @@ const MyComponent = () => {
       activeLeadDoctype="CRM Lead"
       // Connect to your app's toast system (e.g. PrimeReact, react-hot-toast)
       showNotification={(title, msg) => toast.success(msg)} // title: "Success", msg: "Email sent successfully"
-      showWarning={(title, msg) => toast.warn(msg)}      // title: "Validation Error", msg: "Please add a recipient"
-      showError={(title, msg) => toast.error(msg)}        // title: "Error", msg: "Failed to send email"
+      showWarning={(title, msg) => toast.warn(msg)} // title: "Validation Error", msg: "Please add a recipient"
+      showError={(title, msg) => toast.error(msg)} // title: "Error", msg: "Failed to send email"
     />
-
   );
 };
 ```
@@ -68,7 +65,7 @@ const MyComponent = () => {
 };
 ```
 
-### 3. Manual Modal Control (with Zustand/Redux)
+### 3. Manual Modal Control (with Zustand)
 
 If you manage your modal state externally (e.g., for global "Email Reply" shortcuts), you can use the `isOpen`, `onOpen`, and `onClose` props.
 
@@ -157,11 +154,9 @@ apiAdapter.showWarning?.("Validation Error", "Please add at least one recipient"
 
 // Upon catastrophic or server-side failures:
 apiAdapter.showError?.("Error", "Failed to send email");
-
 ```
 
 ### Example with custom handlers:
-
 
 ```tsx
 <EmailComposerTrigger
@@ -183,18 +178,9 @@ import { useNotification } from "@/components/common/NotificationProvider";
 import { useAuthStore } from "@/stores/authStore";
 import { useLeadStore } from "@/stores/leadStore";
 import { useEmailReplyStore } from "@/stores/emailReplyStore";
-import {
-  useSendEmail,
-  useUploadEmailFile,
-  useUpdateCommunicationStatus,
-  useGetEmailTemplatesFetcher,
-} from "@/hooks/email/useEmailHooks";
+import { useSendEmail, useUploadEmailFile, useUpdateCommunicationStatus, useGetEmailTemplatesFetcher } from "@/hooks/email/useEmailHooks";
 
-export function useEmailComposerAdapters({
-  defaultToEmails,
-  referenceName,
-  links,
-}) {
+export function useEmailComposerAdapters({ defaultToEmails, referenceName, links }) {
   const queryClient = useQueryClient();
   const fullName = useAuthStore((s) => s.full_name) ?? "";
   const { name: activeLeadName, doctype: activeLeadDoctype } = useLeadStore();
@@ -206,51 +192,67 @@ export function useEmailComposerAdapters({
   const { mutate: updateStatusMutation } = useUpdateCommunicationStatus();
   const getEmailTemplatesFetcher = useGetEmailTemplatesFetcher();
 
-  const config = useMemo(() => ({
-    currentUserFullName: fullName,
-    defaultToEmails,
-    referenceName,
-    activeLeadName,
-    activeLeadDoctype,
-    links,
-    replyData: replyData ?? null,
-  }), [fullName, defaultToEmails, referenceName, activeLeadName, activeLeadDoctype, links, replyData]);
+  // Step 1
+  const config = useMemo(
+    () => ({
+      currentUserFullName: fullName,
+      defaultToEmails,
+      referenceName,
+      activeLeadName,
+      activeLeadDoctype,
+      links,
+      replyData: replyData ?? null,
+    }),
+    [fullName, defaultToEmails, referenceName, activeLeadName, activeLeadDoctype, links, replyData]
+  );
 
-  const apiAdapter = useMemo(() => ({
-    sendEmail: async (payload) => {
-      const data = await sendEmailMutation(payload);
-      // Optional: Handle Frappe-style server messages...
-      return { name: data?.name };
-    },
-    uploadFile: async (file) => {
-      const data = await uploadFileMutation(file);
-      return { name: data?.name, file_url: data?.file_url };
-    },
-    getTemplates: async () => {
-      const res = await getEmailTemplatesFetcher();
-      return (res?.message || []).map(t => ({
-        id: t.name,
-        name: t.subject || t.name,
-        body: t.response_html || t.response || ""
-      }));
-    },
-    updateCommunicationStatus: async (name, status) => {
-      updateStatusMutation({ name, payload: { status } });
-    },
-    showNotification: (title, message) => showSuccess(title, message),
-    showWarning: (title, message) => showWarning(title, message),
-    showError: (title, message) => showError(title, message),
-    onEmailSent: () => {
-      queryClient.invalidateQueries({ queryKey: ["incomingCommunications"] });
-    },
-  }), [sendEmailMutation, uploadFileMutation, updateStatusMutation, getEmailTemplatesFetcher, queryClient, showSuccess, showWarning, showError]);
+  // Step 2
+  const apiAdapter = useMemo(
+    () => ({
+      sendEmail: async (payload) => {
+        const data = await sendEmailMutation(payload);
+        // Optional: Handle Frappe-style server messages...
+        return { name: data?.name };
+      },
+      uploadFile: async (file) => {
+        const data = await uploadFileMutation(file);
+        return { name: data?.name, file_url: data?.file_url };
+      },
+      getTemplates: async () => {
+        const res = await getEmailTemplatesFetcher();
+        return (res?.message || []).map((t) => ({
+          id: t.name,
+          name: t.subject || t.name,
+          body: t.response_html || t.response || "",
+        }));
+      },
+      updateCommunicationStatus: async (name, status) => {
+        updateStatusMutation({ name, payload: { status } });
+      },
+      showNotification: (title, message) => showSuccess(title, message),
+      showWarning: (title, message) => showWarning(title, message),
+      showError: (title, message) => showError(title, message),
+      onEmailSent: () => {
+        queryClient.invalidateQueries({ queryKey: ["incomingCommunications"] });
+      },
+    }),
+    [
+      sendEmailMutation,
+      uploadFileMutation,
+      updateStatusMutation,
+      getEmailTemplatesFetcher,
+      queryClient,
+      showSuccess,
+      showWarning,
+      showError,
+    ]
+  );
 
   return { config, apiAdapter };
 }
 ```
 
 ## 📦 Building for Production
-
 
 If you are developing locally or contributing:
 
@@ -263,4 +265,4 @@ This generates the `dist/` folder containing the optimized JS and CSS files.
 
 ## 📄 License
 
-MIT © 8848 Digital
+MIT

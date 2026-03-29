@@ -100,19 +100,17 @@ export const EmailComposerTrigger: React.FC<EmailComposerTriggerProps> = ({
   const isOpen = isExternallyControlled ? externalIsOpen : internalIsOpen;
 
   const handleOpen = () => {
-    if (onOpen) {
-      onOpen();
-    } else if (!isExternallyControlled) {
+    if (!isExternallyControlled) {
       setInternalIsOpen(true);
     }
+    onOpen?.();
   };
 
   const handleClose = () => {
-    if (onClose) {
-      onClose();
-    } else if (!isExternallyControlled) {
+    if (!isExternallyControlled) {
       setInternalIsOpen(false);
     }
+    onClose?.();
   };
 
   return (

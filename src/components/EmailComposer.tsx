@@ -27,7 +27,6 @@ interface EmailComposerProps {
 
   // Control & Callbacks
   onClose: () => void;
-  onSend?: () => void;
   onEmailSent?: () => void;
 
   /** App provides its own RichTextEditor component (e.g. PrimeReact Editor). */
@@ -66,7 +65,6 @@ const EmailComposer = ({
   replyData: propsReplyData = null,
   token,
   onClose,
-  onSend,
   onEmailSent,
   RichTextEditor,
   showNotification,
@@ -130,7 +128,7 @@ const EmailComposer = ({
     handleAttachClick,
     handleSend,
     handleTemplateSelect,
-  } = useEmailComposerLogic({ apiAdapter, config, onClose, onSend });
+  } = useEmailComposerLogic({ apiAdapter, config, onClose });
 
   return (
     <div className="ecw-email-composer">

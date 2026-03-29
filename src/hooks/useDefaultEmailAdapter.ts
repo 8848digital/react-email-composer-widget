@@ -109,10 +109,10 @@ export function useDefaultEmailAdapter({
         const res = await methods.uploadFile(file);
         const responseData = res.data as any;
         const responseMessage = responseData?.data?.message || responseData?.message || responseData;
-        return { 
-          name: responseMessage?.name, 
+        return {
+          name: responseMessage?.name,
           file_name: responseMessage?.file_name,
-          file_url: responseMessage?.file_url 
+          file_url: responseMessage?.file_url
         };
       },
 

@@ -4,13 +4,7 @@ import React from "react";
 import EmailComposer from "./EmailComposer";
 import Modal from "./common/Modal";
 import { useDefaultEmailAdapter } from "../hooks/useDefaultEmailAdapter";
-import type { 
-  EmailWidgetApiAdapter, 
-  EmailWidgetConfig, 
-  RichTextEditorProps, 
-  EmailComposerLink, 
-  EmailReplyData 
-} from "../types/email";
+import type { EmailWidgetApiAdapter, EmailWidgetConfig, RichTextEditorProps, EmailComposerLink, EmailReplyData } from "../types/email";
 
 interface EmailComposerModalProps {
   // Option 1: Provide full adapter + config (Advanced)
@@ -31,7 +25,6 @@ interface EmailComposerModalProps {
   // Control & Visibility
   isOpen: boolean;
   onClose: () => void;
-  onSend?: () => void;
 
   // Components & Styling
   RichTextEditor?: React.ComponentType<RichTextEditorProps>;
@@ -60,7 +53,6 @@ export const EmailComposerModal: React.FC<EmailComposerModalProps> = ({
   token,
   isOpen,
   onClose,
-  onSend,
   onEmailSent,
   showNotification,
   showWarning,
@@ -68,7 +60,6 @@ export const EmailComposerModal: React.FC<EmailComposerModalProps> = ({
   RichTextEditor,
   modalSize = "800px",
   header = <h3 style={{ margin: 0, fontSize: "1.1rem" }}>Email Composer</h3>,
-
 }) => {
   // Initialize default adapter if none provided externally
   const { config: internalConfig, apiAdapter: internalApiAdapter } = useDefaultEmailAdapter({
@@ -92,19 +83,8 @@ export const EmailComposerModal: React.FC<EmailComposerModalProps> = ({
   const config = externalConfig || internalConfig;
 
   return (
-    <Modal
-      open={isOpen}
-      onClose={onClose}
-      width={modalSize}
-      header={header}
-    >
-      <EmailComposer 
-        apiAdapter={apiAdapter} 
-        config={config} 
-        RichTextEditor={RichTextEditor}
-        onClose={onClose}
-        onSend={onSend}
-      />
+    <Modal open={isOpen} onClose={onClose} width={modalSize} header={header}>
+      <EmailComposer apiAdapter={apiAdapter} config={config} RichTextEditor={RichTextEditor} onClose={onClose} />
     </Modal>
   );
 };

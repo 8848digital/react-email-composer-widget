@@ -258,6 +258,15 @@
   min-height: 150px;
 }
 
+/* Keep Quill toolbar/editor LTR even if host app uses RTL globally. */
+.ecw-internal-editor,
+.ecw-internal-editor .ql-toolbar,
+.ecw-internal-editor .ql-container,
+.ecw-internal-editor .ql-editor {
+  direction: ltr;
+  text-align: left;
+}
+
 .ecw-email-composer-rich-text-editor {
   width: 100%;
   min-height: 200px;
