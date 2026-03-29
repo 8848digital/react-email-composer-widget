@@ -80,6 +80,41 @@ const MyComponent = () => {
 };
 ```
 
+## ⚙️ Properties (Props)
+
+These props are available on **`EmailComposerTrigger`**, **`EmailComposerModal`**, and **`EmailComposer`** (unless specified).
+
+| Prop | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| **Core (Simple Mode)** | | | |
+| `baseURL` | `string` | - | Base URL for the internal API calls. |
+| `token` | `string` | - | Authorization token for the API calls. |
+| `currentUserFullName` | `string` | `""` | The name of the sender. |
+| `defaultToEmails` | `string[]` | `[]` | List of pre-filled recipient email addresses. |
+| `referenceName` | `string \| null` | `null` | Primary document ID (e.g., "CONTACT-001"). |
+| `referenceDoctype` | `string` | - | Primary document type. |
+| `activeLeadName` | `string \| null` | `null` | Context ID for the lead. |
+| `activeLeadDoctype` | `string` | `"CRM Lead"` | Context doctype for the lead. |
+| `links` | `EmailComposerLink[]` | `[]` | Related records to link in the communication log. |
+| `replyData` | `EmailReplyData \| null` | `null` | Threading data for replies. |
+| **Advanced Mode** | | | |
+| `apiAdapter` | `EmailWidgetApiAdapter` | - | External API logic provider. Overrides simple mode. |
+| `config` | `EmailWidgetConfig` | - | External configuration object. Overrides simple mode. |
+| **Components & Styling** | | | |
+| `RichTextEditor` | `React.ComponentType<RichTextEditorProps>` | - | Custom editor component (e.g., PrimeReact Editor). |
+| `buttonLabel` | `string` | `"Email"` | Label for the trigger button. |
+| `className` | `string` | `""` | CSS class for the trigger button. |
+| `modalSize` | `string` | `"800px"` | Width of the modal. |
+| `header` | `React.ReactNode` | - | Custom header for `EmailComposerModal`. |
+| **Control & Callbacks** | | | |
+| `isOpen` | `boolean` | - | Controls the visibility of the modal. |
+| `onOpen` | `() => void` | - | Callback when the modal is opened. |
+| `onClose` | `() => void` | - | Callback when requested to close. (**Required** on `EmailComposerModal` & `EmailComposer`). |
+| `onEmailSent` | `() => void` | - | Callback after a successful email send. |
+| `showNotification` | `(title: string, msg: string) => void` | - | Success toast handler. |
+| `showWarning` | `(title: string, msg: string) => void` | - | Warning toast handler. |
+| `showError` | `(title: string, msg: string) => void` | - | Error toast handler. |
+
 ## ⚙️ Configuration (Adapters)
 
 ### `EmailWidgetApiAdapter` Example
