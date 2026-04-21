@@ -21,6 +21,8 @@ interface EmailComposerTriggerProps {
   referenceDoctype?: string;
   activeLeadName?: string | null;
   activeLeadDoctype?: string;
+  activeTaskName?: string | null;
+  activeTaskDoctype?: string;
   links?: EmailComposerLink[];
   replyData?: EmailReplyData | null;
   token?: string;
@@ -67,6 +69,8 @@ export const EmailComposerTrigger: React.FC<EmailComposerTriggerProps> = ({
   referenceDoctype,
   activeLeadName = null,
   activeLeadDoctype = "CRM Lead",
+  activeTaskName = null,
+  activeTaskDoctype = "CRM Task",
   links = [],
   replyData = null,
   RichTextEditor,
@@ -95,6 +99,8 @@ export const EmailComposerTrigger: React.FC<EmailComposerTriggerProps> = ({
     referenceDoctype,
     activeLeadName,
     activeLeadDoctype,
+    activeTaskName,
+    activeTaskDoctype,
     links,
     replyData,
     onEmailSent,

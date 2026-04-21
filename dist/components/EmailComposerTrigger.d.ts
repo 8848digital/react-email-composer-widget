@@ -10,6 +10,8 @@ interface EmailComposerTriggerProps {
     referenceDoctype?: string;
     activeLeadName?: string | null;
     activeLeadDoctype?: string;
+    activeTaskName?: string | null;
+    activeTaskDoctype?: string;
     links?: EmailComposerLink[];
     replyData?: EmailReplyData | null;
     token?: string;

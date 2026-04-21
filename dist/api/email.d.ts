@@ -21,6 +21,10 @@ export interface EmailTemplateResponse {
     response_html: string | null;
     response: string;
 }
+export interface EmailTemplateReference {
+    reference_doctype: string;
+    reference_name: string;
+}
 /**
  * Creates an API client with standard Frappe configuration.
  */
@@ -31,7 +35,7 @@ export declare const createDefaultApiClient: (baseURL?: string, token?: string) 
  */
 export declare const emailApi: (api: AxiosInstance) => {
     sendEmail: (payload: SendEmailPayload) => Promise<import('axios').AxiosResponse<any, any, {}>>;
-    getTemplates: () => Promise<import('axios').AxiosResponse<{
+    getTemplates: (references?: EmailTemplateReference[]) => Promise<import('axios').AxiosResponse<{
         message: EmailTemplateResponse[];
     }, any, {}>>;
     uploadFile: (file: File) => Promise<import('axios').AxiosResponse<any, any, {}>>;

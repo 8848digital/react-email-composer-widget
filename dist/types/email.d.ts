@@ -24,6 +24,10 @@ export interface EmailTemplate {
     name: string;
     body: string;
 }
+export interface EmailTemplateReference {
+    reference_doctype: string;
+    reference_name: string;
+}
 export interface Attachment {
     id: string;
     file?: File;
@@ -60,8 +64,8 @@ export interface EmailWidgetApiAdapter {
         file_name?: string;
         file_url?: string;
     }>;
-    /** Fetch email templates. */
-    getTemplates?: () => Promise<EmailTemplate[]>;
+    /** Fetch email templates. Accepts optional references for context-aware templates. */
+    getTemplates?: (references?: EmailTemplateReference[]) => Promise<EmailTemplate[]>;
     /** Update communication status (e.g. "Replied" after reply). */
     updateCommunicationStatus?: (name: string, status: string) => Promise<void>;
     /** Show a notification/toast to the user. */
@@ -80,6 +84,8 @@ export interface EmailWidgetConfig {
     doctype?: string;
     activeLeadName?: string | null;
     activeLeadDoctype?: string;
+    activeTaskName?: string | null;
+    activeTaskDoctype?: string;
     links?: EmailComposerLink[];
     replyData?: EmailReplyData | null;
 }

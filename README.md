@@ -20,7 +20,15 @@
 
 ```bash
 # If using Git installation
-npm install https://github.com/your-username/react-email-composer-widget.git
+npm install https://github.com/8848digital/react-email-composer-widget.git
+```
+
+### Peer Dependencies
+
+This widget requires the following dependencies to be installed in your project:
+
+```bash
+npm install quill@^2.0.2 @phosphor-icons/react
 ```
 
 ## 📋 Usage
@@ -41,12 +49,16 @@ const MyComponent = () => {
       token="your-auth-token"
       currentUserFullName="John Doe"
       defaultToEmails={["customer@example.com"]}
-      activeLeadName="LEAD-001"
+      referenceName="Milan Pethani"       // Contact name (used for template references)
+      referenceDoctype="Contact"
+      activeLeadName="LEAD-001"            // If a lead is active
       activeLeadDoctype="CRM Lead"
+      activeTaskName="585"                 // Falls back to task when no active lead
+      activeTaskDoctype="CRM Task"
       // Connect to your app's toast system (e.g. PrimeReact, react-hot-toast)
-      showNotification={(title, msg) => toast.success(msg)} // title: "Success", msg: "Email sent successfully"
-      showWarning={(title, msg) => toast.warn(msg)} // title: "Validation Error", msg: "Please add a recipient"
-      showError={(title, msg) => toast.error(msg)} // title: "Error", msg: "Failed to send email"
+      showNotification={(title, msg) => toast.success(msg)}
+      showWarning={(title, msg) => toast.warn(msg)}
+      showError={(title, msg) => toast.error(msg)}
     />
   );
 };
@@ -160,10 +172,12 @@ These props are available on **`EmailComposerTrigger`**, **`EmailComposerModal`*
 | `token` | `string` | - | Authorization token for the API calls. |
 | `currentUserFullName` | `string` | `""` | The name of the sender. |
 | `defaultToEmails` | `string[]` | `[]` | List of pre-filled recipient email addresses. |
-| `referenceName` | `string \| null` | `null` | Primary document ID (e.g., "CONTACT-001"). |
+| `referenceName` | `string \| null` | `null` | Primary document ID (e.g., "Milan Pethani"). Also used as the Contact reference name for template fetching. |
 | `referenceDoctype` | `string` | - | Primary document type. |
-| `activeLeadName` | `string \| null` | `null` | Context ID for the lead. |
+| `activeLeadName` | `string \| null` | `null` | Context ID for the lead. When present, templates are fetched with CRM Lead + Contact references. |
 | `activeLeadDoctype` | `string` | `"CRM Lead"` | Context doctype for the lead. |
+| `activeTaskName` | `string \| null` | `null` | Context ID for the task (e.g., "585"). Used for template references when no active lead is present. |
+| `activeTaskDoctype` | `string` | `"CRM Task"` | Context doctype for the task. |
 | `links` | `EmailComposerLink[]` | `[]` | Related records to link in the communication log. |
 | `replyData` | `EmailReplyData \| null` | `null` | Threading data for replies. |
 | **Advanced Mode** | | | |
@@ -172,11 +186,11 @@ These props are available on **`EmailComposerTrigger`**, **`EmailComposerModal`*
 | **Components & Styling** | | | |
 | `RichTextEditor` | `React.ComponentType<RichTextEditorProps>` | - | Custom editor component (e.g., PrimeReact Editor). |
 | `buttonLabel` | `string` | `"Email"` | Label for the trigger button. |
-| `className` | `string` | `""` | CSS class for the trigger button. |
-| `modalSize` | `string` | `"800px"` | Width of the modal. |
+| `className` | `string` | `""` | CSS class for the trigger button container. |
+| `modalSize` | `string` | `"800px"` | Width of the modal (e.g., "800px", "50%"). |
 | `header` | `React.ReactNode` | - | Custom header for `EmailComposerModal`. |
 | `variant` | `"default" \| "plain"` | `"default"` | Trigger button style (`EmailComposerTrigger` only). |
-| `btnClassName` | `string` | `""` | Optional class for `variant="plain"` button (`EmailComposerTrigger` only). |
+| `btnClassName` | `string` | `""` | Optional class for the button (`variant="plain"`) or container. |
 | **Control & Callbacks** | | | |
 | `isOpen` | `boolean` | - | Controls the visibility of the modal. |
 | `onOpen` | `() => void` | - | Callback when the modal is opened. |
@@ -208,9 +222,13 @@ const myApiAdapter = {
     return { name: response.data.message.name, file_url: response.data.message.file_url };
   },
 
-  // Fetch email templates
-  getTemplates: async () => {
-    const response = await axios.get("/api/method/get_templates");
+  // Fetch email templates (receives optional references for context-aware filtering)
+  getTemplates: async (references) => {
+    let url = "/api/method/get_templates";
+    if (references?.length) {
+      url += `?references=${encodeURIComponent(JSON.stringify(references))}`;
+    }
+    const response = await axios.get(url);
     return response.data.message; // Array of { id, name, body }
   },
 
@@ -232,10 +250,27 @@ Define the data context:
 
 - `currentUserFullName`: Displayed "From" name.
 - `defaultToEmails`: Array of pre-filled recipients.
-- `referenceName`: The primary document ID (e.g. "CONTACT-001").
-- `activeLeadName` / `activeLeadDoctype`: Context IDs for linking the email.
+- `referenceName`: The primary document ID (e.g. "Milan Pethani"). Also used as the Contact `reference_name` when building template references.
+- `activeLeadName` / `activeLeadDoctype`: Context IDs for linking the email. When present, templates are fetched with a `CRM Lead` reference.
+- `activeTaskName` / `activeTaskDoctype`: Context IDs for the task. Used as the primary reference for template fetching when there is **no active lead**.
 - `links`: Array of related records to link in the communication log.
 - `replyData`: Object containing threading info (`in_reply_to`, `subject`, `content`).
+
+### Dynamic Email Template References
+
+When the user opens the template selector, the widget automatically builds a `references` array and passes it to the `getTemplates` API:
+
+| Scenario | References Sent |
+| :--- | :--- |
+| Active lead exists | `[{"reference_doctype": "CRM Lead", "reference_name": "<leadName>"}, {"reference_doctype": "Contact", "reference_name": "<contactName>"}]` |
+| No active lead, task exists | `[{"reference_doctype": "CRM Task", "reference_name": "<taskName>"}, {"reference_doctype": "Contact", "reference_name": "<contactName>"}]` |
+| Neither | No references sent (default behavior) |
+
+**API Example:**
+
+```
+GET /api/method/crm_integration.crm_integration.api.email.get_email_templates?references=[{"reference_doctype":"CRM Lead","reference_name":"LEAD-001"},{"reference_doctype":"Contact","reference_name":"Milan Pethani"}]
+```
 
 ## 🔔 Notification Handling
 
@@ -324,8 +359,8 @@ export function useEmailComposerAdapters({ defaultToEmails, referenceName, links
         const data = await uploadFileMutation(file);
         return { name: data?.name, file_url: data?.file_url };
       },
-      getTemplates: async () => {
-        const res = await getEmailTemplatesFetcher();
+      getTemplates: async (references) => {
+        const res = await getEmailTemplatesFetcher(references);
         return (res?.message || []).map((t) => ({
           id: t.name,
           name: t.subject || t.name,

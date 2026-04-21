@@ -21,6 +21,8 @@ interface EmailComposerProps {
   referenceName?: string | null;
   activeLeadName?: string | null;
   activeLeadDoctype?: string;
+  activeTaskName?: string | null;
+  activeTaskDoctype?: string;
   links?: EmailComposerLink[];
   replyData?: EmailReplyData | null;
   token?: string;
@@ -61,6 +63,8 @@ const EmailComposer = ({
   referenceName = null,
   activeLeadName = null,
   activeLeadDoctype = "CRM Lead",
+  activeTaskName = null,
+  activeTaskDoctype = "CRM Task",
   links = [],
   replyData: propsReplyData = null,
   token,
@@ -79,6 +83,8 @@ const EmailComposer = ({
     referenceName,
     activeLeadName,
     activeLeadDoctype,
+    activeTaskName,
+    activeTaskDoctype,
     links,
     replyData: propsReplyData,
     onEmailSent,

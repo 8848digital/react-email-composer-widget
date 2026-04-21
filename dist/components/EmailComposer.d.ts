@@ -9,6 +9,8 @@ interface EmailComposerProps {
     referenceName?: string | null;
     activeLeadName?: string | null;
     activeLeadDoctype?: string;
+    activeTaskName?: string | null;
+    activeTaskDoctype?: string;
     links?: EmailComposerLink[];
     replyData?: EmailReplyData | null;
     token?: string;
@@ -20,5 +22,5 @@ interface EmailComposerProps {
     showWarning?: (title: string, message: string) => void;
     showError?: (title: string, message: string) => void;
 }
-declare const EmailComposer: ({ apiAdapter: externalApiAdapter, config: externalConfig, baseURL, currentUserFullName, defaultToEmails, referenceName, activeLeadName, activeLeadDoctype, links, replyData: propsReplyData, token, onClose, onEmailSent, RichTextEditor, showNotification, showWarning, showError, }: EmailComposerProps) => import("react/jsx-runtime").JSX.Element;
+declare const EmailComposer: ({ apiAdapter: externalApiAdapter, config: externalConfig, baseURL, currentUserFullName, defaultToEmails, referenceName, activeLeadName, activeLeadDoctype, activeTaskName, activeTaskDoctype, links, replyData: propsReplyData, token, onClose, onEmailSent, RichTextEditor, showNotification, showWarning, showError, }: EmailComposerProps) => import("react/jsx-runtime").JSX.Element;
 export default EmailComposer;

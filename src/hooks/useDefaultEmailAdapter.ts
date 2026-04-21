@@ -4,6 +4,7 @@ import type {
   EmailWidgetConfig,
   EmailComposerLink,
   EmailTemplate,
+  EmailTemplateReference,
   SendEmailPayloadAdapter,
   EmailReplyData,
 } from "../types/email";
@@ -17,6 +18,8 @@ export interface DefaultEmailAdapterParams {
   referenceDoctype?: string;
   activeLeadName?: string | null;
   activeLeadDoctype?: string;
+  activeTaskName?: string | null;
+  activeTaskDoctype?: string;
   links?: EmailComposerLink[];
   replyData?: EmailReplyData | null;
   // External Callbacks/State
@@ -39,6 +42,8 @@ export function useDefaultEmailAdapter({
   referenceDoctype,
   activeLeadName,
   activeLeadDoctype = "CRM Lead",
+  activeTaskName,
+  activeTaskDoctype = "CRM Task",
   links,
   replyData,
   onEmailSent,
@@ -61,10 +66,12 @@ export function useDefaultEmailAdapter({
       doctype: activeLeadName ? activeLeadDoctype : (referenceDoctype || "Contact"),
       activeLeadName,
       activeLeadDoctype,
+      activeTaskName,
+      activeTaskDoctype,
       links,
       replyData: replyData ?? null,
     }),
-    [currentUserFullName, defaultToEmails, referenceName, referenceDoctype, activeLeadName, activeLeadDoctype, links, replyData]
+    [currentUserFullName, defaultToEmails, referenceName, referenceDoctype, activeLeadName, activeLeadDoctype, activeTaskName, activeTaskDoctype, links, replyData]
   );
 
   // Unified API Adapter
@@ -116,8 +123,8 @@ export function useDefaultEmailAdapter({
         };
       },
 
-      getTemplates: async (): Promise<EmailTemplate[]> => {
-        const res = await methods.getTemplates();
+      getTemplates: async (references?: EmailTemplateReference[]): Promise<EmailTemplate[]> => {
+        const res = await methods.getTemplates(references);
         const templateList = res.data?.message || [];
         return templateList.map((template: EmailTemplateResponse) => ({
           id: template.name,

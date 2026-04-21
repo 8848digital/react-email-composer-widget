@@ -3,6 +3,7 @@ import type {
   EmailWidgetApiAdapter,
   EmailWidgetConfig,
   EmailTemplate,
+  EmailTemplateReference,
   EmailComposerLink,
   RecipientTag,
   EmailReplyData,
@@ -139,12 +140,34 @@ export const useEmailComposerLogic = ({ apiAdapter, config, onClose }: UseEmailC
     if (!isTemplateModalOpen || !apiAdapter.getTemplates) return;
     let mounted = true;
 
+    // Build references array for context-aware template fetching
+    // If active lead → [lead ref, contact ref]; otherwise → [task ref, contact ref]
+    const references: EmailTemplateReference[] = [];
+    if (config.activeLeadName?.trim()) {
+      references.push({
+        reference_doctype: config.activeLeadDoctype || "CRM Lead",
+        reference_name: config.activeLeadName,
+      });
+    } else if (config.activeTaskName?.trim()) {
+      references.push({
+        reference_doctype: config.activeTaskDoctype || "CRM Task",
+        reference_name: config.activeTaskName,
+      });
+    }
+    // Always include the contact reference
+    if (config.referenceName?.trim()) {
+      references.push({
+        reference_doctype: "Contact",
+        reference_name: config.referenceName,
+      });
+    }
+
     // Only set loading if we don't have templates yet to avoid scroll resets on re-fetch
     if (emailTemplates.length === 0) {
       setIsLoadingTemplates(true);
     }
 
-    apiAdapter.getTemplates().then((templates) => {
+    apiAdapter.getTemplates(references.length > 0 ? references : undefined).then((templates) => {
       if (mounted) {
         setEmailTemplates(templates);
         setIsLoadingTemplates(false);
@@ -153,7 +176,7 @@ export const useEmailComposerLogic = ({ apiAdapter, config, onClose }: UseEmailC
       if (mounted) setIsLoadingTemplates(false);
     });
     return () => { mounted = false; };
-  }, [isTemplateModalOpen, apiAdapter, emailTemplates.length]);
+  }, [isTemplateModalOpen, apiAdapter, emailTemplates.length, config.activeLeadName, config.activeLeadDoctype, config.activeTaskName, config.activeTaskDoctype, config.referenceName]);
 
 
   const handleTemplateSelect = (templateBody: string) => {

@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { type AxiosInstance } from "axios";
 
 // ─── Shared Types ───
 
@@ -22,6 +22,11 @@ export interface EmailTemplateResponse {
   subject: string;
   response_html: string | null;
   response: string;
+}
+
+export interface EmailTemplateReference {
+  reference_doctype: string;
+  reference_name: string;
 }
 
 // ─── Default API Implementation (Frappe) ───
@@ -74,9 +79,11 @@ export const emailApi = (api: AxiosInstance) => ({
     return api.post(url, formData);
   },
 
-  getTemplates: async () => {
-    const filters = JSON.stringify([["name", "!=", "Lead Sharing Template"]]);
-    const url = `/api/method/crm_integration.crm_integration.api.email.get_email_templates?filters=${encodeURIComponent(filters)}`;
+  getTemplates: async (references?: EmailTemplateReference[]) => {
+    let url = `/api/method/crm_integration.crm_integration.api.email.get_email_templates`;
+    if (references && references.length > 0) {
+      url += `?references=${encodeURIComponent(JSON.stringify(references))}`;
+    }
     return api.get<{ message: EmailTemplateResponse[] }>(url);
   },
 
